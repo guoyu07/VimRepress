@@ -1,3 +1,9 @@
+### Use python-markdown extensions to support syntax highlighting etc
+
+Reference: http://github.com/pkufranky/VimRepress
+Thank to Brother pkufranky
+
+---
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=3510
 
 VimRepress is a plugin for managing wordpress blog from Vim,  a rewritten  of vimscript #1953 , which is broken for years. 

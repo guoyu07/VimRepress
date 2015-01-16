@@ -93,17 +93,19 @@ from ConfigParser import SafeConfigParser
 try:
     import markdown
 except ImportError:
-    try:
-        import markdown2 as markdown
-    except ImportError:
-        class markdown_stub(object):
-            def markdown(self, n):
-                raise VimPressException("The package python-markdown is "
-                        "required and is either not present or not properly "
-                        "installed.")
+    class markdown_stub(object):
+        def markdown(self, n):
+            raise VimPressException("The package python-markdown is "
+                    "required and is either not present or not properly "
+                    "installed.")
 
-        markdown = markdown_stub()
+    markdown = markdown_stub()
 
+def markdown2html(rawtext):
+    # see http://www.freewisdom.org/projects/python-markdown/Available_Extensions
+    exts = ['meta', 'toc(marker=$TOC$)', 'def_list', 'abbr', 'footnotes', 'tables', 'codehilite', 'fenced_code']
+    html = markdown.markdown(rawtext.decode('utf-8'), exts).encode('utf-8')
+    return html
 
 def exception_check(func):
     def __check(*args, **kwargs):
@@ -949,6 +951,7 @@ def blog_preview(pub = "local"):
             echomsg("You have to login in the browser to preview the post when save as draft.")
     else:
         raise VimPressException("Invalid option: %s " % pub)
+    vim.command('redraw!')
 
 
 @exception_check
