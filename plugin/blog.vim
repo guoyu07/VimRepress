@@ -98,13 +98,12 @@ except ImportError:
             raise VimPressException("The package python-markdown is "
                     "required and is either not present or not properly "
                     "installed.")
-
     markdown = markdown_stub()
 
 def markdown2html(rawtext):
     # see http://www.freewisdom.org/projects/python-markdown/Available_Extensions
     exts = ['meta', 'toc(marker=$TOC$)', 'def_list', 'abbr', 'footnotes', 'tables', 'codehilite', 'fenced_code']
-    html = markdown.markdown(rawtext.decode('utf-8'), exts).encode('utf-8')
+    html = markdown.markdown(rawtext, exts)
     return html
 
 def exception_check(func):
@@ -502,7 +501,7 @@ class ContentStruct(object):
                 field = dict(key=G.CUSTOM_FIELD_KEY, value=rawtext)
                 struct["custom_fields"].append(field)
 
-            struct["description"] = self.html_text = markdown.markdown(rawtext)
+            struct["description"] = self.html_text = markdown2html(rawtext);
         else:
             struct["description"] = self.html_text = rawtext
 
@@ -586,7 +585,7 @@ class ContentStruct(object):
             g_data.vimpress_temp_dir = tempfile.mkdtemp(suffix="vimpress")
 
         html = \
-                u"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <title>Vimpress Local Preview: %(title)s</title> <style type="text/css"> ul, li { margin: 1em; } :link,:visited { text-decoration:none } h1,h2,h3,h4,h5,h6,pre,code { font-size:1.1em; } h1 {font-size: 1.8em;} h2 {font-size: 1.5em;} h3{font-size: 1.3em;} h4{font-size: 1.2em;} h5 {font-size: 1.1em;} a img,:link img,:visited img { border:none } body { margin:0 auto; width:770px; font-family: Helvetica, Arial, Sans-serif; font-size:12px; color:#444; } </style> </meta> </head> <body> %(content)s </body> </html>
+                u"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <title>Vimpress Local Preview: %(title)s</title> <style type="text/css"> ul, li { margin: 1em; } :link,:visited { text-decoration:none } h1,h2,h3,h4,h5,h6,pre,code { font-size:1.1em; } h1 {font-size: 1.8em;} h2 {font-size: 1.5em;} h3{font-size: 1.3em;} h4{font-size: 1.2em;} h5 {font-size: 1.1em;} a img,:link img,:visited img { border:none } body { margin:0 auto; width:770px; font-family: Helvetica, Arial, Sans-serif; font-size:12px; color:#444; } </style> </meta><link rel="stylesheet" type="text/css" media="all" href="http://www.yinqisen.cn/wp-content/themes/zenblog/ui/css/pygments_style.css" /></head> <body> %(content)s </body> </html>
 """ % dict(content=self.html_text, title=self.buffer_meta["title"])
         with open(os.path.join(
                 g_data.vimpress_temp_dir, "vimpress_temp.html"), 'w') as f:
